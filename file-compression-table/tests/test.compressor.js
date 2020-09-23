@@ -1,5 +1,20 @@
 import test from "ava";
 import { compress, table } from '../Compressor.js';
+import fs from 'fs';
+import { resolve } from "path";
+
+test.before('Unlink temp files', async t =>  {
+	const fileExts = ['br', 'de', 'gz'];
+	const fileName = 'tmp';
+	const proms = [];
+
+	for (let ext of fileExts) {
+		let filePath = resolve('file-compression-table/fixtures', `${fileName}.${ext}`)
+		proms.push(fs.promises.unlink(filePath))
+	}
+
+	await Promise.allSettled(proms)
+})
 
 test('compress', async (t) => {
 	try {
@@ -8,4 +23,4 @@ test('compress', async (t) => {
 	} catch(er) {
 		t.fail(er.message);
 	}
-});
+})
