@@ -58,7 +58,7 @@ async function calcEfficiency(inputFilePath, writeFilePathDir) {
 
 export function table(obj) {
 	return `
-	Algorithm | Time taken (ms) | Efficiency (%)
+	Algorithm | Time taken (ms) | new filesize (%)
 	--------- | --------------- | --------------
 	brotli    | ${obj.duration.brotli}  | ${obj.efficiency.brotli * 100}
 	deflate   | ${obj.duration.deflate} | ${obj.efficiency.deflate * 100}
