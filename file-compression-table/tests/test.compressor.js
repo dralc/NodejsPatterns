@@ -1,5 +1,5 @@
 import test from "ava";
-import { compress, table } from '../Compressor.js';
+import { compress } from '../Compressor.js';
 import fs from 'fs';
 import { resolve } from "path";
 
@@ -18,9 +18,11 @@ test.before('Unlink temp files', async t =>  {
 
 test('compress', async (t) => {
 	try {
-		await compress('file-compression-table/fixtures/input.txt');
-		t.pass();
+		const dat = await compress('file-compression-table/fixtures/input.txt')
+		t.truthy(dat.duration.brotli && dat.duration.gzip && dat.duration.deflate)
+		t.truthy(dat.efficiency.brotli && dat.efficiency.gzip && dat.efficiency.deflate)
+		t.log(dat)
 	} catch(er) {
-		t.fail(er.message);
+		t.fail(er.message)
 	}
 })

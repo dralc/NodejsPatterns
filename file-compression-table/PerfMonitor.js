@@ -1,17 +1,18 @@
-import { promises as fsp } from 'fs';
+import { performance } from 'perf_hooks';
 import { PassThrough } from 'stream';
 
 export class PerfMonitor extends PassThrough {
 	constructor (opts) {
 		super(opts);
+		this.startTime;
 
 		// Setup listeners to track duration
 		this.once('data', () => {
-			console.time(opts.label)
+			this.startTime = performance.now()
 		})
 
 		this.on('finish', async () => {
-			console.timeEnd(opts.label)
+			opts.duration[opts.label] = performance.now() - this.startTime
 		})
 	}
 }
