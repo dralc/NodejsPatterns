@@ -2,7 +2,8 @@ export default {
 	"failFast": true,
 	"verbose": true,
 	"files": [
-		"**/tests/**/*test*"
+		'file-compression-table/tests/*test*',
+		'big-data-analysis/tests/*test*'
 	],
 	"extensions": [
 		"js"

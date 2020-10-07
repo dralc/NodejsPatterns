@@ -12,6 +12,8 @@
 			"restart": true,
 			"runtimeExecutable": "nodemon",
 			"runtimeArgs": [
+				"--ext",
+				"ts,js",
 				"--exec",
 				"${workspaceFolder}/node_modules/.bin/ava",
 				"--",
