@@ -16,9 +16,6 @@
 				"ts,js",
 				"--exec",
 				"${workspaceFolder}/node_modules/.bin/ava",
-				"--",
-				"--config",
-				"${workspaceFolder}/ava.config.js",
 			],
 			"skipFiles": [
 				"<node_internals>/**"
