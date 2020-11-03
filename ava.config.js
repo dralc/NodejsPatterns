@@ -9,5 +9,6 @@ export default {
 		"js"
 	],
 	"require": [
-	]
+	],
+	"timeout": "1.5m"
 };

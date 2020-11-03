@@ -1,7 +1,7 @@
 import test from 'ava'
 import { createReadStream } from 'fs';
 import { pipeline } from 'stream';
-import { Analyser, didCrimeGoUp, mostCommonCrime, mostDangerousAreas } from '../Analyser.js';
+import { Analyser, didCrimeGoUp, mostCommonCrime, mostDangerousAreas, sortMap } from '../Analyser.js';
 import { resolve } from 'path';
 import csvparse from "csv-parse";
 import { promisify } from "util";
@@ -43,6 +43,9 @@ test('Analysis: What is the most common crime per area?', (t) => {
 	t.snapshot(mostCommonCrime(crimesMap, 1), 'Most common crimes per Borough')
 })
 
-test.skip('Analysis: What is the least common crime overall?', (t) => {
-	t
+test('Analysis: What is the least common crime overall?', (t) => {
+	const crimesMap = aggregates.get('crimesPerCategory')
+	const crimesPerCat = sortMap(crimesMap, 'asc')
+	t.snapshot(crimesPerCat, 'Crimes per category')
+	t.is(crimesPerCat.keys().next().value, 'Sexual Offences:Rape')
 })
