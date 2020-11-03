@@ -10,6 +10,8 @@ export class Analyser extends Transform {
 		this._crimesPerBorough_m = new Map()
 		// <borough, <category, crimecount>>
 		this._crimesPerBorough_by_category_m = new Map()
+		// <category, crimeCount>
+		this._crimesPerCategory_m = new Map()
 	}
 
 	/**
@@ -39,6 +41,11 @@ export class Analyser extends Transform {
 			this._crimesPerBorough_by_category_m.set(borough, crimesByCat_m)
 		}
 		crimesByCat_m.set(`${major_category}:${minor_category}`, value)
+
+		// Collect data for 'Crimes overall'
+		const category = `${major_category}:${minor_category}`
+		prevVal = this._crimesPerCategory_m.get(category) ?? 0
+		this._crimesPerCategory_m.set(category, prevVal + value)
 		
 		cb()
 	}
@@ -48,6 +55,7 @@ export class Analyser extends Transform {
 		this._all_m.set('crimesPerYear', this._crimesPerYr_m)
 		this._all_m.set('crimesPerBorough', this._crimesPerBorough_m)
 		this._all_m.set('crimesPerBorough_by_category', this._crimesPerBorough_by_category_m)
+		this._all_m.set('crimesPerCategory', this._crimesPerCategory_m)
 		this.push(this._all_m)
 		cb()
 	}
@@ -76,7 +84,7 @@ export function didCrimeGoUp(map) {
 }
 
 /**
- * Orders the entries in a map.
+ * Orders the entries in a map by their values
  * 
  * @param {Map} map 
  * @param {string} order Can be 'asc' or 'desc'. Defaults to descending order
@@ -84,9 +92,10 @@ export function didCrimeGoUp(map) {
 export function sortMap(map, order='desc') {
 	const ar = Array.from(map).sort((a, b) => {
 		if (a[1] > b[1]) {
-			return -1
-		} else if (a[1] < b[1]) {
-			return 1
+			return order === 'desc' ? -1 : 1
+		}
+		else if (a[1] < b[1]) {
+			return order === 'asc' ? -1 : 1
 		}
 		return 0;
 	});
@@ -110,9 +119,12 @@ export function mostDangerousAreas(map, limit) {
 }
 
 /**
+ * Returns the <map> with the sub map sorted by highest 'crimecount'
  * 
  * @param {Map} map <borough, <category, crimecount>>
- * @param {string} borough
+ * @param {number} limit
+ * 
+ * @returns {Map}
  */
 export function mostCommonCrime(map, limit) {
 	let _limit = parseInt(limit)
@@ -125,4 +137,17 @@ export function mostCommonCrime(map, limit) {
 	}
 
 	return map;
+}
+
+/**
+ * Returns the 'category with the lowest 'crimecount'
+ * 
+ * @param {Map} map <category, crimecount>
+ * 
+ * @returns {string}
+ */
+export function leastCommonCrimeOverall(map) {
+	const m = sortMap(map, 'asc')
+	const items = m
+	return items
 }
