@@ -1,7 +1,7 @@
 import test from 'ava'
 import { createReadStream } from 'fs';
 import { pipeline } from 'stream';
-import { Analyser, didCrimeGoUp, leastCommonCrimeOverall, mostCommonCrime, mostDangerousAreas, sortMap } from '../Analyser.js';
+import { Analyser, didCrimeGoUp, mostCommonCrime, mostDangerousAreas, sortMap } from '../Analyser.js';
 import { resolve } from 'path';
 import csvparse from "csv-parse";
 import { promisify } from "util";

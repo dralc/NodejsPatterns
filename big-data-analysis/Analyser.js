@@ -138,16 +138,3 @@ export function mostCommonCrime(map, limit) {
 
 	return map;
 }
-
-/**
- * Returns the 'category with the lowest 'crimecount'
- * 
- * @param {Map} map <category, crimecount>
- * 
- * @returns {string}
- */
-export function leastCommonCrimeOverall(map) {
-	const m = sortMap(map, 'asc')
-	const items = m
-	return items
-}
