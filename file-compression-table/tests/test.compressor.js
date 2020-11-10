@@ -9,7 +9,7 @@ test.before('Unlink temp files', async t =>  {
 	const proms = [];
 
 	for (let ext of fileExts) {
-		let filePath = resolve('file-compression-table/fixtures', `${fileName}.${ext}`)
+		let filePath = resolve('fixtures', `${fileName}.${ext}`)
 		proms.push(fs.promises.unlink(filePath))
 	}
 
@@ -18,7 +18,7 @@ test.before('Unlink temp files', async t =>  {
 
 test('compress', async (t) => {
 	try {
-		const dat = await compress('file-compression-table/fixtures/input.txt')
+		const dat = await compress('fixtures/input.txt')
 		t.truthy(dat.duration.brotli && dat.duration.gzip && dat.duration.deflate)
 		t.truthy(dat.efficiency.brotli && dat.efficiency.gzip && dat.efficiency.deflate)
 		t.log(dat)

@@ -14,7 +14,7 @@ const pipelinePm = promisify(pipeline)
 test.before('Aggregate data from the source', async (t) => {
 	// Combine 2 streams as the source stream
 	t.context.inputStream = Pumpify.obj([
-		createReadStream(resolve('big-data-analysis/tmp', 'london_crime_by_lsoa.csv')),
+		createReadStream(resolve('tmp', 'london_crime_by_lsoa.csv')),
 		csvparse({ fromLine: 2 })
 	])
 })
