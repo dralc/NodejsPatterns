@@ -4,70 +4,81 @@
  * as well as the event & property to indicate if the object is initialised.
  */
 
-// const preinitQueueProxy = new Proxy()
 const EventEmitter = require('events');
 const promisify = require('util').promisify;
 const delay = promisify(setTimeout)
-const remoteCall = async (command) => {
-	console.log('...')
-	await delay(1000)
-	return `Ran ${command}`
-}
-
 class NewDb extends EventEmitter {
-	constructor () {
+	constructor() {
 		super()
-		this.commandQueue = []
-		this.connected = false
+	}
+
+	async remoteCall(command) {
+		console.log('...')
+		await delay(1000)
+		return `Ran ${command}`
 	}
 
 	/**
 	 * Returns the result of running a remote db call
-	 * 
 	 * @param {string} command
-	 * @returns {Promise<string|object>}
+	 * @returns {Promise<string|object>} 
 	 */
-	query (command) {
-		if (!this.connected) {
-			return new Promise((resolve) => {
-				// Queue the command
-				const cmd = async () => {
-					resolve(await remoteCall(command))
-				}
-				this.commandQueue.push(cmd)
-			})
-		} else {
-			return remoteCall(command)
-		}
+	query(command) {
+		return this.remoteCall(command)
 	}
 
-	connect () {
-		this.connected = true
+	connect() {
 		this.emit('connect')
-		this.commandQueue.forEach(command => command())
-		this.commandQueue = []
 	}
 }
 
-//  TODO NOW the pre-init queue logic in NewDb should be in a Proxy so that it can be added to any object without changing it's api
-
-
-// const dbProxied = preinitQueueProxy(db)
-
-// dbProxied([''],  'hasInitialsed')
-
 console.log('start')
 const db = new NewDb()
-// db.connect()
 
-db.query('SELECT name FROM authors')
+const preinitQueue = (targ, options) => {
+	let commandQueue = []
+	let connected = false
+
+	return new Proxy(targ, {
+		get(targ, prop, receiver) {
+			const traps = {
+				query: (queryStr) => {
+					return new Promise((resolve) => {
+						if (!connected) {
+							const command = () => {
+								resolve(targ[prop](queryStr))
+							}
+							commandQueue.push(command)
+						} else {
+							resolve(targ[prop](queryStr))
+						}
+					})
+
+				},
+				connect: () => {
+					connected = true
+					targ[prop]()
+					commandQueue.forEach(command => command())
+					commandQueue = []
+				}
+			}
+
+			return Reflect.get(traps, prop) || Reflect.get(targ, prop)
+		}
+	})
+}
+
+//  TODO dynamicize the methods to trap and the event name to emit
+const dbProxy = preinitQueue(db, { hasInitEvent: 'initialised', methods: ['query'] })
+// dbProxy.connect()
+dbProxy.query('SELECT name FROM authors')
 	.then((msg) => {
 		console.log(msg)
 	})
-db.query('SELECT articles FROM authors')
+
+dbProxy.query('SELECT date FROM articles')
 	.then((msg) => {
 		console.log(msg)
 	})
 
-// Actually runs queue
-db.connect()
+dbProxy.connect()
