@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "type": "module",
   "description": "",
-  "main": "index.js",
   "scripts": {
     "start-client": "node ./callServer.js",
-    "start-server": "node ./index.js",
-    "debug-server": "npx nodemon ./index.js"
+    ">> doc start-client": "Eg. Call npm run start-client -- movie",
+    "start-server": "node ./server.js",
+    "debug-server": "npx nodemon ./server.js"
   },
   "author": "",
   "license": "ISC",

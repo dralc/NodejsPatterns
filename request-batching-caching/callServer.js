@@ -3,7 +3,7 @@ import { get } from "http";
 const startTime = Date.now();
 const delay = 100
 
-repeatCall('http://localhost:8000?product=book', 6)
+repeatCall(`http://localhost:8000?product=${process.argv[2]}`, 6)
 
 function repeatCall(url, times) {
 	get(url, (res) => {
