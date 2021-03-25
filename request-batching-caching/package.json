@@ -5,8 +5,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "debug": "npx nodemon ./index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start-client": "node ./callServer.js",
+    "start-server": "node ./index.js",
+    "debug-server": "npx nodemon ./index.js"
   },
   "author": "",
   "license": "ISC",
