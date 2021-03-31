@@ -4,10 +4,10 @@
   "type": "module",
   "description": "",
   "scripts": {
-    "start-client": "node ./callServer.js",
-    ">> doc start-client": "Eg. Call npm run start-client -- movie",
     "start-server": "node ./server.js",
-    "debug-server": "npx nodemon ./server.js"
+    "debug-server": "npx nodemon ./server.js",
+    "start-client": "node ./callServer.js",
+    "  >> Eg. npm run start-client -- movie": ""
   },
   "author": "",
   "license": "ISC",

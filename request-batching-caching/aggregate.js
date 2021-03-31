@@ -1,8 +1,13 @@
 import level from 'level'
 
 const db = level('./sales-db', { valueEncoding: 'json' })
-let batchedstream
+/** @type {Map<string, ReadableStream>} */
+let batches = new Map()
 
+/**
+ * @param {string} product 
+ * @returns {ReadableStream}
+ */
 function totalSales (product) {
 	let total = 0
 	const stream = db.createValueStream()
@@ -15,29 +20,37 @@ function totalSales (product) {
 	stream.on('end', () => {
 		stream.emit('totaldone', total)
 		stream.destroy()
-		batchedstream = null
+		batches.delete(product)
 	})
 
 	return stream
 }
 
 
+/**
+ * @param {string} product
+ * @returns {ReadableStream}
+ */
 function batchRequests(product) {
 	console.log('Batching ...')
-	// TODO batched stream needs to be unique per product
-	if (batchedstream) return batchedstream
+	let batch = batches.get(product)
+	if (batch) return batch
 	
-	batchedstream = totalSales(product)
-
-	return batchedstream
+	batch = totalSales(product)
+	batches.set(product, batch)
+	return batch
 }
 
 function cacheRequests(product) {
 
 }
 
-export function aggregate(product, opts = {}) {
-	const { type = 'batch' } = { ...opts }
+/**
+ * @param {string} product
+ * @param {string} [type] Can be origin, batch, cache
+ * @returns {ReadableStream}
+ */
+export function aggregate(product, type='batch') {
 	const fns = {
 		origin: totalSales,
 		batch: batchRequests,

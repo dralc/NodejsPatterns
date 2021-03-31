@@ -19,7 +19,7 @@ createServer((req, res) => {
 	}
 
 	console.log('Request for: ', product)
-	const streamTotal = aggregate(product)
+	const streamTotal = aggregate(product, 'batch')
 
 	streamTotal.on('totaldone', (total) => {
 		res.end(JSON.stringify({ product, total }))
